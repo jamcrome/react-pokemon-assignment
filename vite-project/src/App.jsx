@@ -1,10 +1,23 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import axios from 'axios'
 
 function App() {
+
+  const [type, displayType] = useState("Your Random Type Is...")
+  const [onClick] = useState(false)
+
+  useEffect(()=> {
+    if (type === "Your Random Type Is...") {
+      return;
+    }
+    const displayType = async() => {
+      await getPokemonType()
+    }
+    displayType()
+  }, [onClick])
 
   const createImg = (name, src) => {
     let div = document.createElement("div")
@@ -37,23 +50,14 @@ function App() {
     let randomType = Math.floor(Math.random()*20)
     let resp = await axios.get(`https://pokeapi.co/api/v2/type/${randomType}`)
     let data = resp.data.pokemon
-    // let typePokemon = resp.data['pokemon']
+    let type = resp.data['name']
+    displayType(type)
     getRandomPokemon(data)    
   }
 
-  // const fetchData = async () => {
-  //   try { 
-  //     const test = await axios.get('https://pokeapi.co/api/v2/type/14'); 
-  //     return test;
-  //   }
-  //     // This should log the response object
-  //     catch (error) { console.error("Error fetching data:", error);
-  //   }
-  // }
-
   return (
     <>
-      <h1>Pokemon Getter</h1>
+      <h1>{type}</h1>
       
         <button onClick={getPokemonType}>Get Random Pokemon Type</button>
         <div id="img-container">
